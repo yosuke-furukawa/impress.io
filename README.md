@@ -39,7 +39,7 @@ requirement tools:
 How to create presentation
 ---------
 
-    $ git clone git@github.com:yosuke-furukawa/impress.io.git
+    $ git clone git://github.com/yosuke-furukawa/impress.io.git
     $ cd impress.io
     $ npm install
     $ grunt build // if you have errors, sudo may help you.
@@ -56,16 +56,18 @@ If you are presenter, you would run socket.io and use it to be better!
 How to run socket.io
 --------
 
+you need external host for running Socket.io.
+
     $ grunt create:user --user=<username> --pass=<password>
     $ grunt forever:start
 
-+ access [http://localhost:3000/](http://localhost:3000/)
-+ enter your <username> and <password> and login.
++ access **http://your_host_name:port/**
++ enter your *username* and *password* and login.
 
 Recreate impress page for socket.io
 -------
 
-    $ grunt create --file=README.md --socket_url=http://localhost:3000/
+    $ grunt create --file=README.md --socket_url=http://your_host_name:port/
     $ open index.html
 
 
