@@ -60,7 +60,7 @@
 <div class="step" data-y="0" data-x="3600">
 <h2>How to create presentation</h2>
 
-<pre><code>$ git clone git@github.com:yosuke-furukawa/impress.io.git
+<pre><code>$ git clone git://github.com/yosuke-furukawa/impress.io.git
 $ cd impress.io
 $ npm install
 $ grunt build // if you have errors, sudo may help you.
@@ -82,20 +82,22 @@ $ open index.html
 <div class="step" data-y="800" data-x="1200">
 <h2>How to run socket.io</h2>
 
+<p>you need external host for running Socket.io.</p>
+
 <pre><code>$ grunt create:user --user=&lt;username&gt; --pass=&lt;password&gt;
 $ grunt forever:start
 </code></pre>
 
 <ul>
-<li>access <a href="http://localhost:3000/">http://localhost:3000/</a></li>
-<li>enter your <username> and <password> and login.</li>
+<li>access <strong>http://your_host_name:port/</strong></li>
+<li>enter your <em>username</em> and <em>password</em> and login.</li>
 </ul>
 
 </div>
 <div class="step" data-y="800" data-x="2400">
 <h2>Recreate impress page for socket.io</h2>
 
-<pre><code>$ grunt create --file=README.md --socket_url=http://localhost:3000/
+<pre><code>$ grunt create --file=README.md --socket_url=http://your_host_name:port/
 $ open index.html
 </code></pre>
 
