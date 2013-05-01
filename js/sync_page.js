@@ -1,7 +1,7 @@
 (function ( document, window ) {
   'use strict';
-  var presenter = io.connect("http://localhost:3000/");
-  var listener = io.connect("http://localhost:3000/");
+  var presenter = io.connect("http://www.yosuke-furukawa.info:3000/");
+  var listener = io.connect("http://www.yosuke-furukawa.info:3000/");
   var room = document.getElementById("title");
   room = room.firstElementChild.innerText;
   presenter.emit('join', room);
