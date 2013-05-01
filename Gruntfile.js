@@ -50,6 +50,11 @@ module.exports = function(grunt) {
     grunt.log.writeln('CREATE PRESENTATION');
     var file = grunt.option('file') || grunt.log.error("NO FILE, grunt create --file=<filepath> --socket_url=<socket.io.url>");
     var socket_url = grunt.option('socket_url');
+    if (socket_url) {
+      socket_url = "--socket_url=" + socket_url;
+    } else {
+      socket_url = "";
+    }
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
     exec('./markdown2impress.pl ' + file + ' ' + socket_url, function(err, stdout, stderr) {
@@ -80,6 +85,11 @@ module.exports = function(grunt) {
     grunt.log.writeln('WATCH IMPRESS AND IF CHANGED, INDEX.HTML IS RECREATED');
     var file = grunt.option('file') || grunt.log.error("NO FILE, grunt create --file=<filepath> --socket_url=<socket.io.url>");
     var socket_url = grunt.option('socket_url');
+    if (socket_url) {
+      socket_url = "--socket_url=" + socket_url;
+    } else {
+      socket_url = "";
+    }
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
     exec('./markdown2impress.pl ' + file + ' -r ' + socket_url, function(err, stdout, stderr) {
