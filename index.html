@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
+    <link href="css/impress.css" rel="stylesheet" />
+</head>
+<body class="impress-not-supported">
+    <div class="fallback-message">
+        <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+        <p>For the best experience please use the latest <b>Chrome</b> or <b>Safari</b> browser. Firefox 10 (to be released soon) will also handle it.</p>
+    </div>
+<div id="impress">
+
+<div id="title" class="step" data-y="0" data-x="0">
+<h1>impress.io = socket.io + impress.js</h1>
+
+</div>
+<div class="step" data-y="0" data-x="1200">
+<h2>What is impress.io?</h2>
+
+<p><strong>impress.io</strong> is a presentation tool using <em>impress.js</em> and <em>socket.io</em></p>
+
+</div>
+<div class="step" data-y="0" data-x="2400">
+<h2>Feature</h2>
+
+<ul>
+<li>Synchronize presenter's page and listeners' page</li>
+<li>Catch Github webhook, Reload</li>
+<li>Catch file update, Reload</li>
+</ul>
+
+</div>
+<div data-z="500" data-rotate="90" data-scale="3" class="step" data-y="3000" data-x="1000">
+<h2>How to use impress.io</h2>
+
+<!-- data-x="1000" -->
+<!-- data-y="3000" -->
+<!-- data-z="500" -->
+<!-- data-scale="3" -->
+<!-- data-rotate="90" -->
+
+<p><strong>impress.io</strong> uses <em>markdown2impress</em></p>
+
+<p>requirement tools:</p>
+
+<ol>
+<li><p>Node.js &amp; perl</p></li>
+<li><p>cpanm</p>
+
+<p>$ curl -L http://cpanmin.us | perl - --sudo App::cpanminus</p></li>
+<li><p>grunt</p>
+
+<p>$ npm install grunt-cli -g</p></li>
+</ol>
+
+</div>
+<div class="step" data-y="0" data-x="3600">
+<h2>How to create presentation</h2>
+
+<pre><code>$ git clone git@github.com:yosuke-furukawa/impress.io.git
+$ cd impress.io
+$ npm install
+$ grunt build // if you have errors, sudo may help you.
+</code></pre>
+
+</div>
+<div class="step" data-y="0" data-x="4800">
+<h2>Write markdown and use markdown2impress</h2>
+
+<pre><code>$ grunt create --file=README.md // or write your markdown
+$ open index.html
+</code></pre>
+
+</div>
+<div class="step" data-y="800" data-x="0">
+<h2>If you are presenter, you would run socket.io and use it to be better!</h2>
+
+</div>
+<div class="step" data-y="800" data-x="1200">
+<h2>How to run socket.io</h2>
+
+<pre><code>$ grunt create:user --user=&lt;username&gt; --pass=&lt;password&gt;
+$ grunt forever:start
+</code></pre>
+
+<ul>
+<li>access <a href="http://localhost:3000/">http://localhost:3000/</a></li>
+<li>enter your <username> and <password> and login.</li>
+</ul>
+
+</div>
+<div class="step" data-y="800" data-x="2400">
+<h2>Recreate impress page for socket.io</h2>
+
+<pre><code>$ grunt create --file=README.md --socket_url=http://localhost:3000/
+$ open index.html
+</code></pre>
+
+</div>
+
+
+    <div id="overview" class="step" data-x="3000" data-y="1500" data-scale="10">
+    </div>
+
+</div>
+
+<div class="hint">
+    <p>Use a spacebar or arrow keys to navigate</p>
+</div>
+<script>
+if ("ontouchstart" in document.documentElement) { 
+    document.querySelector(".hint").innerHTML = "<p>Tap on the left or right to navigate</p>";
+}
+</script>
+<script src="js/impress.js"></script>
+<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+<script src="js/sync_page.js"></script>
+<script>impress().init();</script>
+</body>
+</html>
+
