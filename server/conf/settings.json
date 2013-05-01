@@ -1,0 +1,7 @@
+{
+  "port": 3000,
+  "webhook_port": 3001,
+  "webhook_repo": "yosuke-furukawa/impress.io",
+  "webhook_branch": "gh-pages",
+  "webhook_action": "file:all"
+}

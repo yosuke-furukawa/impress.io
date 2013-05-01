@@ -1,0 +1,7 @@
+*~
+*.swp
+*.swo
+node_modules
+server/conf/userdata.json
+forever
+

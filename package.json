@@ -1,0 +1,17 @@
+{
+  "name": "impress.io",
+  "version": "0.0.1",
+  "description": "impress.js + socket.io = impress.io",
+  "repository": "",
+  "dependencies": {
+    "socket.io": "~0.9.14",
+    "gith": "~1.0.4",
+    "grunt-forever": "~0.4.0"
+  },
+  "author": "yosuke_furukawa",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-mocha-test": "~0.2.2"
+  }
+}
