@@ -14,9 +14,15 @@ module.exports = function(grunt) {
     }
   });
   grunt.registerTask('build', function(){
+    var locallib = grunt.option('local-lib');
+    if (locallib) {
+      locallib = "--local-lib=" + locallib;
+    } else {
+      locallib = "";
+    }
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
-    exec('cd markdown2impress && cpanm --installdeps .', function(err, stdout, stderr) {
+    exec('cd markdown2impress && cpanm --installdeps . ' + locallib, function(err, stdout, stderr) {
       grunt.log.writeln('BUILD INSTALL DEPS');
       grunt.log.writeln('stdout: ' + stdout);
       grunt.log.writeln('stderr: ' + stderr);
