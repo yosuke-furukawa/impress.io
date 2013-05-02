@@ -11,7 +11,7 @@
     } else {
       syncButton.innerText = 'Connect';
     }
-  });
+  }, false);
   room = room.firstElementChild.innerText;
   presenter = presenter.socket.of('/presenter');
   presenter.on('connect_failed', function(reason) {
