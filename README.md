@@ -4,7 +4,7 @@ impress.io = socket.io + impress.js
 What is impress.io?
 ---------
 
-**impress.io** is a presentation tool using *impress.js* and *socket.io*
+**impress.io** is a presentation tool using [*impress.js*](https://github.com/bartaz/impress.js/) and [*socket.io*](http://socket.io)
 
 Feature
 --------
@@ -21,7 +21,7 @@ How to use impress.io
 <!-- data-scale="3" -->
 <!-- data-rotate="90" -->
 
-**impress.io** uses *markdown2impress*
+**impress.io** uses [*markdown2impress*](https://github.com/yosuke-furukawa/markdown2impress)
 
 
 requirement tools:
@@ -41,6 +41,8 @@ How to create presentation
 
     $ git clone git://github.com/yosuke-furukawa/impress.io.git
     $ cd impress.io
+    $ git submodule init
+    $ git submodule update
     $ npm install
     $ grunt build // if you have errors, sudo may help you.
 

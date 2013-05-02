@@ -66,19 +66,27 @@ var app = http.createServer(function (req, res) {
 app.listen(conf.port);
 var io = sio.listen(app);
 
-io.sockets.on('connection', function (socket) {
+io.of('/presenter').authorization(function (handshake, callback) {
+  var parsedCookie = cookie.parseCookie(handshake.headers.cookie);
+  var sessionId = parsedCookie.sessionId;
+  callback(null, sessionId && !session.isExpired(sessionId));
+}).on('connection', function (socket) {
   socket.on('join', function (room) {
     socket.room = room;
     socket.join(room);
   });
+  socket.on('disconnect', function () {
+    socket.leave(socket.room);
+  });
   socket.on('sync', function (message) {
-    var parsedCookie = cookie.parseCookie(socket.handshake.headers.cookie);
-    var sessionId = parsedCookie.sessionId;
-    if (!sessionId || session.isExpired(sessionId)) {
-      console.log("unauthorized ignore");
-    } else {
-      socket.broadcast.to(socket.room).emit('sync', message);
-    }
+    io.of('/listener').in(socket.room).emit('sync', message);
+  });
+});
+
+io.of('/listener').on('connection', function (socket) {
+  socket.on('join', function (room) {
+    socket.room = room;
+    socket.join(room);
   });
   socket.on('disconnect', function () {
     socket.leave(socket.room);
@@ -86,7 +94,8 @@ io.sockets.on('connection', function (socket) {
 });
 
 var reloadAll = function(){
-  io.sockets.emit('reload');
+  io.of('/presenter').emit('reload');
+  io.of('/listener').emit('reload');
 };
 
 gith({
