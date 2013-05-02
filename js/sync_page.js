@@ -4,6 +4,7 @@
   var room = document.getElementById("title");
   var syncButton = document.getElementById("sync");
   syncButton.addEventListener('click', function(e) {
+    e.stopPropagation();
     var syncText = syncButton.innerText;
     if (syncText === 'Connect') {
       syncButton.innerText = 'Disconnect';
