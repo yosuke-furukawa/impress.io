@@ -7,9 +7,13 @@ var http = require('http'),
     userdata = require('./conf/userdata.json'),
     cookie = require('./lib/cookie.js'),
     Session = require('./lib/session.js'),
-    conf = require('./conf/settings.json'),
+    conf = require('./conf/settings.js'),
+    argv = require('optimist').default('path', conf.publish_path).argv,
     gith = require('gith').create(conf.webhook_port);
 
+
+console.log(argv.path);
+console.log(argv._);
 var responsePage = function(page, res) {
   var stream = fs.createReadStream(__dirname + '/' +  page);
   stream.on('error', function(err) {
@@ -21,7 +25,7 @@ var responsePage = function(page, res) {
 
 var session = new Session();
 var app = connect()
-  .use(connect.static(__dirname + '/../public'))
+  .use(connect.static(argv.path))
   .use(useragent())
   .use(function (req, res) {
     var parsedCookie = cookie.parseCookie(req.headers.cookie);

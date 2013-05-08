@@ -9,7 +9,7 @@ module.exports = function(grunt) {
     },
     forever: {
       options: {
-        index: 'server/app.js'
+        index: __dirname + '/server/app.js'
       }
     }
   });
