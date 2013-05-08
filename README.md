@@ -49,7 +49,7 @@ How to create presentation
 Write markdown and use markdown2impress
 --------
 
-    $ grunt create --file=README.md // or write your markdown
+    $ grunt createImpress --file=README.md // or write your markdown
     $ open index.html
 
 If you are presenter, you would run socket.io and use it to be better!
@@ -70,7 +70,7 @@ you need external host for running Socket.io.
 Recreate impress page for socket.io
 -------
 
-    $ grunt create --file=README.md --socket_url=http://your_host_name:port/
+    $ grunt createImpress --file=README.md --socket_url=http://your_host_name:port/
     $ open index.html
 
 If you don't wanna recreate, use watchImpress command

@@ -52,18 +52,31 @@ module.exports = function(grunt) {
 
   grunt.registerTask('server:test', 'mochaTest');
 
-  grunt.registerTask('create', function(){
-    grunt.log.writeln('CREATE PRESENTATION');
-    var file = grunt.option('file') || grunt.log.error("NO FILE, grunt create --file=<filepath> --socket_url=<socket.io.url>");
+  var createUsage = function(message) {
+    grunt.log.error(message + " grunt createImpress/watchImpress  --file=<filepath, required> --width=<width, default=1200> --height=<height, default=800> --max_column=<maxcolumn default=5> --output_dir=<output directory, default='./public'> --socket_url=<socket.io.url, default='http://localhost:3000/'>");
+  };
+  var createArgs = function() {
+    var file = grunt.option('file') || createUsage("NO FILE");
+    var width = grunt.option('width') || "";
+    width = typeof width === 'number' ? "--width="+width : "";
+    var height = grunt.option('height') || "";
+    height = typeof height === 'number' ? "--height="+height : "";
+    var max_column = grunt.option('max_column') || "";
+    max_column = typeof max_column === 'number' ? "--max_column="+max_column : "";
+    var outputdir = grunt.option('outputdir') || "./public";
+    outputdir = outputdir ? "--outputdir="+outputdir : "";
     var socket_url = grunt.option('socket_url');
-    if (socket_url) {
-      socket_url = "--socket_url=" + socket_url;
-    } else {
-      socket_url = "";
-    }
+    socket_url = socket_url ? "--socket_url="+socket_url : "";
+    var args = [file, width, height, max_column, outputdir, socket_url];
+    grunt.log.writeln(args.join(" "));
+    return args.join(" ");
+  };
+
+  grunt.registerTask('createImpress', function(){
+    grunt.log.writeln('CREATE PRESENTATION');
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
-    exec('./markdown2impress.pl ' + file + ' ' + socket_url, function(err, stdout, stderr) {
+    exec('./markdown2impress.pl ' + createArgs(), function(err, stdout, stderr) {
       grunt.log.writeln('stdout: ' + stdout);
       grunt.log.writeln('stderr: ' + stderr);
       if (stderr) {
@@ -77,7 +90,7 @@ module.exports = function(grunt) {
     grunt.log.writeln('CLEAN PRESENTATION');
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
-    exec('rm -rf js && rm -rf css && rm index.html', function(err, stdout, stderr) {
+    exec('rm -rf public', function(err, stdout, stderr) {
       grunt.log.writeln('stdout: ' + stdout);
       grunt.log.writeln('stderr: ' + stderr);
       if (stderr) {
@@ -89,16 +102,9 @@ module.exports = function(grunt) {
 
   grunt.registerTask('watchImpress', function(){
     grunt.log.writeln('WATCH IMPRESS AND IF CHANGED, INDEX.HTML IS RECREATED');
-    var file = grunt.option('file') || grunt.log.error("NO FILE, grunt create --file=<filepath> --socket_url=<socket.io.url>");
-    var socket_url = grunt.option('socket_url');
-    if (socket_url) {
-      socket_url = "--socket_url=" + socket_url;
-    } else {
-      socket_url = "";
-    }
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
-    exec('./markdown2impress.pl ' + file + ' -r ' + socket_url, function(err, stdout, stderr) {
+    exec('./markdown2impress.pl ' + createArgs() + ' -r ', function(err, stdout, stderr) {
       grunt.log.writeln('stdout: ' + stdout);
       grunt.log.writeln('stderr: ' + stderr);
       if (stderr) {

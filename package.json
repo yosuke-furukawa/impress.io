@@ -6,7 +6,9 @@
   "dependencies": {
     "socket.io": "~0.9.14",
     "gith": "~1.0.4",
-    "grunt-forever": "~0.4.0"
+    "grunt-forever": "~0.4.0",
+    "connect": "~2.7.8",
+    "connect-useragent": "0.0.2"
   },
   "author": "yosuke_furukawa",
   "license": "MIT",
