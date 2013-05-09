@@ -1,34 +1,21 @@
 'use strict';
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
-  grunt.loadNpmTasks('grunt-forever');
-
   grunt.initConfig({
     mochaTest: {
       normal: ['server/test/**/*_test.js']
     },
-    forever: {
+    server: {
       options: {
-        index: __dirname + '/server/app.js'
+        logpath: __dirname + '/server/logs',
       }
     }
   });
   grunt.registerTask('build', function(){
-    var locallib = grunt.option('local-lib');
-    if (locallib) {
-      locallib = "--local-lib=" + locallib;
-    } else {
-      locallib = "";
-    }
-    var force = grunt.option('force');
-    if (force) {
-      force = "--force";
-    } else {
-      force = "";
-    }
+    var options = grunt.option.flags().join(" ");
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
-    exec('cd markdown2impress && cpanm --installdeps . ' + locallib + ' ' + force, function(err, stdout, stderr) {
+    exec('cd markdown2impress && cpanm --installdeps . ' + options, function(err, stdout, stderr) {
       grunt.log.writeln('BUILD INSTALL DEPS');
       grunt.log.writeln('stdout: ' + stdout);
       grunt.log.writeln('stderr: ' + stderr);
@@ -50,6 +37,49 @@ module.exports = function(grunt) {
       grunt.log.writeln('done');
   });
 
+  grunt.registerTask('server:start', function() {
+    var options = grunt.option.flags().join(" ");
+    var exec = require('child_process').exec;
+    var done = grunt.task.current.async();
+    var execCmd = 'forever start ' + __dirname + '/server/app.js ' + options;
+    exec(execCmd, function(err, stdout, stderr) {
+      grunt.log.writeln('stdout: ' + stdout);
+      grunt.log.writeln('stderr: ' + stderr);
+      if (stderr) {
+        err = 1;
+      }
+      done(err);
+    });
+  });
+
+  grunt.registerTask('server:stop', function() {
+    var options = grunt.option.flags().join(" ");
+    var exec = require('child_process').exec;
+    var done = grunt.task.current.async();
+    var execCmd = 'forever stop ' + __dirname + '/server/app.js ' + options;
+    exec(execCmd, function(err, stdout, stderr) {
+      grunt.log.writeln('stdout: ' + stdout);
+      grunt.log.writeln('stderr: ' + stderr);
+      if (stderr) {
+        err = 1;
+      }
+      done(err);
+    });
+  });
+  grunt.registerTask('server:restart', function() {
+    var options = grunt.option.flags().join(" ");
+    var exec = require('child_process').exec;
+    var done = grunt.task.current.async();
+    var execCmd = 'forever restart ' + __dirname + '/server/app.js ' + options;
+    exec(execCmd, function(err, stdout, stderr) {
+      grunt.log.writeln('stdout: ' + stdout);
+      grunt.log.writeln('stderr: ' + stderr);
+      if (stderr) {
+        err = 1;
+      }
+      done(err);
+    });
+  });
   grunt.registerTask('server:test', 'mochaTest');
 
   var createUsage = function(message) {
