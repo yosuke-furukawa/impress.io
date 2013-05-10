@@ -1,7 +1,6 @@
 var http = require('http'),
     sio = require('socket.io'),
     connect = require('connect'),
-    useragent = require('connect-useragent'),
     fs = require('fs'),
     qs = require('querystring'),
     userdata = require('./conf/userdata.json'),
@@ -22,18 +21,17 @@ var responsePage = function(page, res) {
 
 var session = new Session();
 var app = connect()
+  .use(function (req, res, next){
+    var ua = req.headers["user-agent"];
+    if (ua === 'impress.io') {
+      reloadAll();
+    }
+    next();
+  })
   .use(connect.static(conf.path))
-  .use(useragent())
   .use(function (req, res) {
     var parsedCookie = cookie.parseCookie(req.headers.cookie);
-    if (req.url === '/reload') {
-      var ua = req.headers["user-agent"];
-      console.log(ua);
-      if (ua === 'impress.io') {
-        reloadAll();
-      }
-      responsePage('success.html', res);
-    } else if (req.url === '/login') {
+    if (req.url === '/login') {
       var queryData = '';
       if (req.method === 'POST') {
         req.on('data', function(data) {

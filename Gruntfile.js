@@ -1,6 +1,7 @@
 'use strict';
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
+
   grunt.initConfig({
     mochaTest: {
       normal: ['server/test/**/*_test.js']
@@ -12,7 +13,8 @@ module.exports = function(grunt) {
       }
     }
   });
-  grunt.registerTask('build', function(){
+
+  grunt.registerTask('build', "build markdown2impress", function(){
     var options = grunt.option.flags().join(" ");
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
@@ -27,7 +29,7 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('create:user', function(){
+  grunt.registerTask('create:user', "create presenter username and password", function(){
       grunt.log.writeln('CREATE USER');
       var username = grunt.option('user') || grunt.log.error("NO USERNAME, grunt create:user --user=<username> --pass=<password>");
       var password = grunt.option('pass') || grunt.log.error("NO PASSWORD, grunt create:user --user=<username> --pass=<password>");
@@ -38,18 +40,12 @@ module.exports = function(grunt) {
       grunt.log.writeln('done');
   });
 
-  grunt.registerTask('server', function(args) {
+  grunt.registerTask('server', "operate server, server:start runs server, server:stop stops server, server:test test server module", function(args) {
     var options = grunt.option.flags().join(" ");
     var execCmd = '';
     switch (args) {
-     case 'start':
-       execCmd = 'forever start ' + __dirname + '/server/app.js ' + options;
-       break;
-     case 'stop':
-       execCmd = 'forever stop ' + __dirname + '/server/app.js ' + options;
-       break;
-     case 'restart':
-       execCmd = 'forever restart ' + __dirname + '/server/app.js ' + options;
+     case 'start': case 'stop': case 'restart':
+       execCmd = 'forever ' + args + ' ' + __dirname + '/server/app.js ' + options;
        break;
      case 'test':
        grunt.task.run('mochaTest');
@@ -71,7 +67,7 @@ module.exports = function(grunt) {
       });
     }
   });
-  grunt.registerTask('impress', function(args){
+  grunt.registerTask('impress', "create ", function(args){
     switch (args) {
      case 'create':
        grunt.task.run(['clean', 'createImpress']);
@@ -86,7 +82,7 @@ module.exports = function(grunt) {
   });
 
   var createUsage = function(message) {
-    grunt.log.error(message + " grunt createImpress/watchImpress  --file=<filepath, required> --width=<width, default=1200> --height=<height, default=800> --max_column=<maxcolumn default=5> --output_dir=<output directory, default='./public'> --socket_url=<socket.io.url, default='http://localhost:3000/'>");
+    grunt.log.error(message + " grunt impress:create/impress:watch  --file=<filepath, required> --width=<width, default=1200> --height=<height, default=800> --max_column=<maxcolumn default=5> --output_dir=<output directory, default='./public'> --socket_url=<socket.io.url, default='http://localhost:3000/'>");
   };
   var createArgs = function() {
     var file = grunt.option('file') || createUsage("NO FILE");
@@ -139,7 +135,7 @@ module.exports = function(grunt) {
     grunt.log.writeln('WATCH IMPRESS AND IF CHANGED, INDEX.HTML IS RECREATED');
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
-    exec('forever -c ./markdown2impress.pl ' + createArgs() + ' -r ', function(err, stdout, stderr) {
+    exec('./markdown2impress.pl ' + createArgs() + ' -r ', function(err, stdout, stderr) {
       grunt.log.writeln('stdout: ' + stdout);
       grunt.log.writeln('stderr: ' + stderr);
       if (stderr) {
@@ -148,4 +144,38 @@ module.exports = function(grunt) {
       done(err);
     });
   });
+
+  grunt.registerTask('help', function() {
+    grunt.log.writeln('-- grunt impress --');
+
+    grunt.log.writeln("grunt impress:create / create impress file");
+    grunt.log.writeln("usage: grunt impress:create");
+    grunt.log.writeln("  --file=<filepath, required>");
+    grunt.log.writeln("  --width=<width, default=1200>");
+    grunt.log.writeln("  --height=<height, default=800>");
+    grunt.log.writeln("  --max_column=<maxcolumn default=5>");
+    grunt.log.writeln("  --output_dir=<output directory, default="+ __dirname +"/public>");
+    grunt.log.writeln("  --socket_url=<socket.io.url, default='http://localhost:3000/'>");
+    grunt.log.writeln();
+    grunt.log.writeln("grunt impress:watch / auto recreate impress file if changed.");
+    grunt.log.writeln("usage: grunt impress:watch");
+    grunt.log.writeln("  --file=<filepath, required>");
+    grunt.log.writeln("  --width=<width, default=1200>");
+    grunt.log.writeln("  --height=<height, default=800>");
+    grunt.log.writeln("  --max_column=<maxcolumn default=5>");
+    grunt.log.writeln("  --output_dir=<output directory, default="+ __dirname +"/public>");
+    grunt.log.writeln("  --socket_url=<socket.io.url, default='http://localhost:3000/'>");
+    grunt.log.writeln();
+    grunt.log.writeln('-- grunt server --');
+    grunt.log.writeln("grunt server:start / run server");
+    grunt.log.writeln("usage: grunt server:start");
+    grunt.log.writeln("  --path=<filepath, default=" + __dirname + "/public>");
+    grunt.log.writeln("  --port=<web server port, default=3000>");
+    grunt.log.writeln("  --webhook_port=<github webhook port, default=3001>");
+    grunt.log.writeln("  --webhook_repo=<webhook repository, default=yosuke-furukawa/impress.io>");
+    grunt.log.writeln("  --webhook_branch=<webhook branch, default=file:all> ");
+    grunt.log.writeln("grunt server:stop / stop server");
+    grunt.log.writeln("grunt server:test / test server");
+  });
+  grunt.registerTask('default', 'help');
 };

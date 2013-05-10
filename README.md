@@ -36,6 +36,10 @@ requirement tools:
 
     $ npm install grunt-cli -g
 
+3. forever
+
+    $ npm install forever -g
+
 How to create presentation
 ---------
 
@@ -70,13 +74,13 @@ you need external host for running Socket.io.
 Recreate impress page for socket.io
 -------
 
-    $ grunt createImpress --file=README.md --socket_url=http://your_host_name:port/
+    $ grunt impress:create --file=README.md --socket_url=http://your_host_name:port/
     $ open index.html
 
 If you don't wanna recreate, use watchImpress command
 -------
 
-    $ grunt watchImpress --file=README.md --socket_url=http://your_host_name:port/
+    $ grunt impress:watch --file=README.md --socket_url=http://your_host_name:port/
 
 Catch Github webhook, then reload all client browsers.
 -------
