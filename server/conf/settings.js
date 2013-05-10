@@ -1,13 +1,10 @@
-function define(name, value) {
-  Object.defineProperty(exports, name, {
-    value: value,
-    enumerable: true
-  });
-}
-
-define("port", 3000);
-define("webhook_port", 3001);
-define("webhook_repo", "yosuke-furukawa/impress.io");
-define("webhook_branch", "gh-pages");
-define("webhook_action", "file:all");
-define("publish_path", __dirname + "/../../public");
+module.exports.argv = function() {
+  return require('optimist')
+    .default("port", 3000)
+    .default("webhook_port", 3001)
+    .default("webhook_repo", "yosuke-furukawa/impress.io")
+    .default("webhook_branch", "gh-pages")
+    .default("webhook_action", "file:all")
+    .default("path", __dirname + "/../../public")
+    .argv;
+};

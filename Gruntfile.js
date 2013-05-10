@@ -7,7 +7,8 @@ module.exports = function(grunt) {
     },
     server: {
       options: {
-        logpath: __dirname + '/server/logs',
+        outlog: __dirname + '/server/logs/out.log',
+        errlog: __dirname + '/server/logs/err.log',
       }
     }
   });
@@ -37,50 +38,52 @@ module.exports = function(grunt) {
       grunt.log.writeln('done');
   });
 
-  grunt.registerTask('server:start', function() {
+  grunt.registerTask('server', function(args) {
     var options = grunt.option.flags().join(" ");
-    var exec = require('child_process').exec;
-    var done = grunt.task.current.async();
-    var execCmd = 'forever start ' + __dirname + '/server/app.js ' + options;
-    exec(execCmd, function(err, stdout, stderr) {
-      grunt.log.writeln('stdout: ' + stdout);
-      grunt.log.writeln('stderr: ' + stderr);
-      if (stderr) {
-        err = 1;
-      }
-      done(err);
-    });
+    var execCmd = '';
+    switch (args) {
+     case 'start':
+       execCmd = 'forever start ' + __dirname + '/server/app.js ' + options;
+       break;
+     case 'stop':
+       execCmd = 'forever stop ' + __dirname + '/server/app.js ' + options;
+       break;
+     case 'restart':
+       execCmd = 'forever restart ' + __dirname + '/server/app.js ' + options;
+       break;
+     case 'test':
+       grunt.task.run('mochaTest');
+       break;
+     default:
+       grunt.log.error("Not found your command : " + args);
+       break;
+    }
+    if (execCmd) {
+      var exec = require('child_process').exec;
+      var done = grunt.task.current.async();
+      exec(execCmd, function(err, stdout, stderr) {
+        grunt.log.writeln('stdout: ' + stdout);
+        grunt.log.writeln('stderr: ' + stderr);
+        if (stderr) {
+          err = 1;
+        }
+        done(err);
+      });
+    }
   });
-
-  grunt.registerTask('server:stop', function() {
-    var options = grunt.option.flags().join(" ");
-    var exec = require('child_process').exec;
-    var done = grunt.task.current.async();
-    var execCmd = 'forever stop ' + __dirname + '/server/app.js ' + options;
-    exec(execCmd, function(err, stdout, stderr) {
-      grunt.log.writeln('stdout: ' + stdout);
-      grunt.log.writeln('stderr: ' + stderr);
-      if (stderr) {
-        err = 1;
-      }
-      done(err);
-    });
+  grunt.registerTask('impress', function(args){
+    switch (args) {
+     case 'create':
+       grunt.task.run(['clean', 'createImpress']);
+       break;
+     case 'watch':
+       grunt.task.run(['clean', 'watchImpress']);
+       break;
+     default:
+       grunt.log.error("Not found your command : " + args);
+       break;
+    }
   });
-  grunt.registerTask('server:restart', function() {
-    var options = grunt.option.flags().join(" ");
-    var exec = require('child_process').exec;
-    var done = grunt.task.current.async();
-    var execCmd = 'forever restart ' + __dirname + '/server/app.js ' + options;
-    exec(execCmd, function(err, stdout, stderr) {
-      grunt.log.writeln('stdout: ' + stdout);
-      grunt.log.writeln('stderr: ' + stderr);
-      if (stderr) {
-        err = 1;
-      }
-      done(err);
-    });
-  });
-  grunt.registerTask('server:test', 'mochaTest');
 
   var createUsage = function(message) {
     grunt.log.error(message + " grunt createImpress/watchImpress  --file=<filepath, required> --width=<width, default=1200> --height=<height, default=800> --max_column=<maxcolumn default=5> --output_dir=<output directory, default='./public'> --socket_url=<socket.io.url, default='http://localhost:3000/'>");
@@ -98,9 +101,9 @@ module.exports = function(grunt) {
     var socket_url = grunt.option('socket_url');
     socket_url = socket_url ? "--socket_url="+socket_url : "";
     var args = [file, width, height, max_column, outputdir, socket_url];
-    grunt.log.writeln(args.join(" "));
     return args.join(" ");
   };
+
 
   grunt.registerTask('createImpress', function(){
     grunt.log.writeln('CREATE PRESENTATION');
@@ -118,14 +121,16 @@ module.exports = function(grunt) {
 
   grunt.registerTask('clean', function(){
     grunt.log.writeln('CLEAN PRESENTATION');
+    var outputdir = grunt.option('outputdir') || "./public";
+    var rm_jsdir = "rm -rf " + outputdir + "/js";
+    var rm_cssdir = "rm -rf " + outputdir + "/css";
+    var rm_index_html = "rm -f " + outputdir + "/index.html";
+    var rm_cmd = [rm_jsdir, rm_cssdir, rm_index_html].join(" && ");
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
-    exec('rm -rf public', function(err, stdout, stderr) {
+    exec(rm_cmd, function(err, stdout, stderr) {
       grunt.log.writeln('stdout: ' + stdout);
       grunt.log.writeln('stderr: ' + stderr);
-      if (stderr) {
-        err = 1;
-      }
       done(err);
     });
   });
@@ -134,7 +139,7 @@ module.exports = function(grunt) {
     grunt.log.writeln('WATCH IMPRESS AND IF CHANGED, INDEX.HTML IS RECREATED');
     var exec = require('child_process').exec;
     var done = grunt.task.current.async();
-    exec('./markdown2impress.pl ' + createArgs() + ' -r ', function(err, stdout, stderr) {
+    exec('forever -c ./markdown2impress.pl ' + createArgs() + ' -r ', function(err, stdout, stderr) {
       grunt.log.writeln('stdout: ' + stdout);
       grunt.log.writeln('stderr: ' + stderr);
       if (stderr) {

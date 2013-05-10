@@ -49,7 +49,7 @@ How to create presentation
 Write markdown and use markdown2impress
 --------
 
-    $ grunt createImpress --file=README.md // or write your markdown
+    $ grunt impress:create --file=README.md // or write your markdown
     $ open index.html
 
 If you are presenter, you would run socket.io and use it to be better!
@@ -61,8 +61,8 @@ How to run socket.io
 you need external host for running Socket.io.
 
     $ grunt create:user --user=<username> --pass=<password>
-    $ grunt forever:start
-    $ grunt forever:stop // for stop
+    $ grunt server:start
+    $ grunt server:stop // for stop
 
 + access **http://your_host_name:port/**
 + enter your *username* and *password* and login.
