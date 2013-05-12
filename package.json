@@ -13,6 +13,8 @@
   "license": "MIT",
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-mocha-test": "~0.2.2"
+    "grunt-mocha-test": "~0.2.2",
+    "supertest": "~0.6.0",
+    "socket.io-client": "~0.9.11"
   }
 }
