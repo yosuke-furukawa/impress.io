@@ -39,7 +39,7 @@ var app = connect()
         });
         req.on('end', function() {
           var body = qs.parse(queryData);
-          if (userdata[body.name] === body.password) {
+          if (userdata[body.name] && userdata[body.name] === body.password) {
             var sessionId = session.store(body.name);
             var expires = new Date(Date.now() + session.expiredPeriod).toUTCString();
             res.setHeader('Set-Cookie', ["sessionId="+sessionId+";expires="+expires]);
@@ -70,6 +70,7 @@ var server = http.createServer(app);
 server.listen(conf.port);
 var io = sio.listen(server);
 
+module.exports = server;
 io.of('/presenter').authorization(function (handshake, callback) {
   var parsedCookie = cookie.parseCookie(handshake.headers.cookie);
   var sessionId = parsedCookie.sessionId;
