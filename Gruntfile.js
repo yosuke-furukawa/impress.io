@@ -29,15 +29,26 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('create:user', "create presenter username and password", function(){
-      grunt.log.writeln('CREATE USER');
-      var username = grunt.option('user') || grunt.log.error("NO USERNAME, grunt create:user --user=<username> --pass=<password>");
-      var password = grunt.option('pass') || grunt.log.error("NO PASSWORD, grunt create:user --user=<username> --pass=<password>");
-      grunt.log.writeln('USER = %s, PASS = %s', username, password);
-      var userjson = {};
-      userjson[username] = password;
-      grunt.file.write('server/conf/userdata.json', JSON.stringify(userjson));
-      grunt.log.writeln('done');
+  grunt.registerTask('user', "create presenter username and password", function(args){
+      switch (args) {
+        case 'create':
+          grunt.log.writeln('CREATE USER');
+          var username = grunt.option('user') || grunt.log.error("NO USERNAME, grunt create:user --user=<username> --pass=<password>");
+          var password = grunt.option('pass') || grunt.log.error("NO PASSWORD, grunt create:user --user=<username> --pass=<password>");
+          grunt.log.writeln('USER = %s, PASS = %s', username, password);
+          var userjson = {};
+          userjson[username] = password;
+          grunt.file.write('server/conf/userdata.json', JSON.stringify(userjson));
+          grunt.log.writeln('done');
+          break;
+        case 'remove':
+          grunt.log.writeln('REMOVE USER');
+          grunt.file.delete('server/conf/userdata.json');
+          break;
+        default:
+          grunt.log.error("Not found your command : " + args);
+          break;
+      }
   });
 
   grunt.registerTask('server', "operate server, server:start runs server, server:stop stops server, server:test test server module", function(args) {
@@ -48,7 +59,9 @@ module.exports = function(grunt) {
        execCmd = 'forever ' + args + ' ' + __dirname + '/server/app.js ' + options;
        break;
      case 'test':
-       grunt.task.run('mochaTest');
+       grunt.option('user', 'admin');
+       grunt.option('pass', 'admin');
+       grunt.task.run(['user:create', 'mochaTest', 'user:remove']);
        break;
      default:
        grunt.log.error("Not found your command : " + args);
@@ -166,6 +179,15 @@ module.exports = function(grunt) {
     grunt.log.writeln("  --output_dir=<output directory, default="+ __dirname +"/public>");
     grunt.log.writeln("  --socket_url=<socket.io.url, default='http://localhost:3000/'>");
     grunt.log.writeln();
+    grunt.log.writeln('-- grunt user --');
+    grunt.log.writeln("grunt user:create / create user/password ");
+    grunt.log.writeln("usage: grunt user:create");
+    grunt.log.writeln("  --user=<username, required>");
+    grunt.log.writeln("  --pass=<password, required>");
+    grunt.log.writeln();
+    grunt.log.writeln("grunt user:remove / remove user ");
+    grunt.log.writeln("usage: grunt user:remove");
+    grunt.log.writeln();
     grunt.log.writeln('-- grunt server --');
     grunt.log.writeln("grunt server:start / run server");
     grunt.log.writeln("usage: grunt server:start");
@@ -174,7 +196,9 @@ module.exports = function(grunt) {
     grunt.log.writeln("  --webhook_port=<github webhook port, default=3001>");
     grunt.log.writeln("  --webhook_repo=<webhook repository, default=yosuke-furukawa/impress.io>");
     grunt.log.writeln("  --webhook_branch=<webhook branch, default=file:all> ");
+    grunt.log.writeln();
     grunt.log.writeln("grunt server:stop / stop server");
+    grunt.log.writeln();
     grunt.log.writeln("grunt server:test / test server");
   });
   grunt.registerTask('default', 'help');
