@@ -1,5 +1,6 @@
 impress.io = socket.io + impress.js
 ===================================
+[![Build status](https://api.travis-ci.org/yosuke-furukawa/impress.io.png)](https://travis-ci.org/yosuke-furukawa/impress.io)
 
 What is impress.io?
 ---------
